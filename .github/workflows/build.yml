@@ -80,6 +80,7 @@ jobs:
       with:
         name: llvm
     - run: tar xf crossover-sources-20.0.4.tar.gz
+      if: steps.builded_clang.outputs.cache-hit != 'true'
     - name: Extract LLVM
       if: steps.builded_clang.outputs.cache-hit != 'true'
       run: |
@@ -127,6 +128,7 @@ jobs:
       with:
         name: clang
     - run: tar xf crossover-sources-20.0.4.tar.gz
+      if: steps.builded_wine.outputs.cache-hit != 'true'
     - name: Extract LLVM
       if: steps.builded_wine.outputs.cache-hit != 'true'
       run: |
