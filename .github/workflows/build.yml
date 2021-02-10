@@ -39,9 +39,9 @@ jobs:
         cd sources/clang/llvm
         mkdir build
         cd build
-        cmake ..
+        cmake -DCMAKE_INSTALL_PREFIX=/opt/cwbgh/llvm ..
         make -j4
     - uses: actions/upload-artifact@v2
       with:
         name: llvm
-        path: llvm/build/bin
+        path: /opt/cwbgh/llvm
