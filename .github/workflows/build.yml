@@ -85,7 +85,7 @@ jobs:
       run: |
         sudo mkdir -p /opt/cwbgh/llvm
         sudo chown -R $(whoami) /opt/cwbgh
-        LLVM_TAR_GZ = $(pwd)/llvm.tar.gz
+        LLVM_TAR_GZ=$(pwd)/llvm.tar.gz
         cd /
         tar xf $LLVM_TAR_GZ
     - name: Build
