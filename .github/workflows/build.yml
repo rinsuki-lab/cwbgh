@@ -41,6 +41,7 @@ jobs:
         cd build
         cmake -DCMAKE_INSTALL_PREFIX=/opt/cwbgh/llvm -DCMAKE_BUILD_TYPE=MinSizeRel ..
         make -j4
+        make install
     - uses: actions/upload-artifact@v2
       with:
         name: llvm
