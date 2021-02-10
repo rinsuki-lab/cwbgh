@@ -12,7 +12,7 @@ jobs:
       id: download_sources
       with:
         path: downloaded
-        key: v1-20.0.4
+        key: v1-sources-20.0.4
     - name: Download
       if: steps.download_sources.outputs.cache-hit != 'true'
       run: |
@@ -30,21 +30,32 @@ jobs:
     - download-sources
     steps:
     - uses: actions/checkout@master
+    - uses: actions/cache@v2
+      id: builded_llvm
+      with:
+        path: llvm.tar.gz
+        key: v1-llvm-20.0.4
     - uses: actions/download-artifact@v2
+      if: steps.builded_llvm.outputs.cache-hit != 'true'
       with:
         name: sources
     - run: tar xf crossover-sources-20.0.4.tar.gz
-    - run: |
-        ls
-        cd sources/clang/llvm
-        mkdir build
+    - name: Build
+      if: steps.builded_llvm.outputs.cache-hit != 'true'
+      run: |
         sudo mkdir -p /opt/cwbgh/llvm
         sudo chown -R $(whoami) /opt/cwbgh
+        cd sources/clang/llvm
+        mkdir build
         cd build
         cmake -DCMAKE_INSTALL_PREFIX=/opt/cwbgh/llvm -DCMAKE_BUILD_TYPE=MinSizeRel ..
         make -j4
         make install
+    - name: Archive
+      if: steps.builded_llvm.outputs.cache-hit != 'true'
+      run: |
+        tar czf llvm.tar.gz /opt/cwbgh/llvm
     - uses: actions/upload-artifact@v2
       with:
         name: llvm
-        path: /opt/cwbgh/llvm
+        path: llvm.tar.gz
