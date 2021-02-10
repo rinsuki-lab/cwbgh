@@ -100,7 +100,7 @@ jobs:
         make -j4
         make install
     - name: Archive
-      if: steps.builded_llvm.outputs.cache-hit != 'true'
+      if: steps.builded_clang.outputs.cache-hit != 'true'
       run: |
         tar czf clang.tar.gz /opt/cwbgh/llvm
     - uses: actions/upload-artifact@v2
