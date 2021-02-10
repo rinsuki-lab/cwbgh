@@ -150,7 +150,7 @@ jobs:
         export CXX="clang++"
         export MACOSX_DEPLOYMENT_TARGET=10.14
         cd sources/wine
-        ./configure --enable-win32on64 --disable-winedbg --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
+        ./configure --enable-win32on64 --disable-winedbg --disable-tests --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
         make -j4
         make install
     - name: Archive
