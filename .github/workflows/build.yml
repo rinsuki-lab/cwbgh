@@ -33,4 +33,14 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: sources
-    - run: ls .
+    - run: tar xf crossover-sources-20.0.4.tar.gz
+    - run: |
+      cd llvm
+      mkdir build
+      cd build
+      cmake ..
+      make
+    - uses: actions/upload-artifact@v2
+      with:
+        name: llvm
+        path: llvm/build/bin
