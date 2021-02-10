@@ -91,6 +91,7 @@ jobs:
     - name: Build
       if: steps.builded_clang.outputs.cache-hit != 'true'
       run: |
+        export PATH="/opt/cwbgh/llvm/bin:$PATH"
         cd sources/clang/clang
         mkdir build
         cd build
