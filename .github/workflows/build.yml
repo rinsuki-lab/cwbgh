@@ -40,6 +40,7 @@ jobs:
       with:
         name: sources
     - run: tar xf crossover-sources-20.0.4.tar.gz
+      if: steps.builded_llvm.outputs.cache-hit != 'true'
     - name: Build
       if: steps.builded_llvm.outputs.cache-hit != 'true'
       run: |
