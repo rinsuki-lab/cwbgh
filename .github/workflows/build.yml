@@ -35,7 +35,7 @@ jobs:
         name: sources
     - run: tar xf crossover-sources-20.0.4.tar.gz
     - run: |
-        cd llvm
+        cd sources/llvm
         mkdir build
         cd build
         cmake ..
