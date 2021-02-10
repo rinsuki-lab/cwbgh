@@ -1,0 +1,36 @@
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  download-sources:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/cache@v2
+      id: download_sources
+      with:
+        path: downloaded
+        key: v1-20.0.4
+    - name: Download
+      if: steps.download_sources.outputs.cache-hit != "true"
+      run: |
+        mkdir -p downloaded
+        cd downloaded
+        rm *
+        wget https://media.codeweavers.com/pub/crossover/source/crossover-sources-20.0.4.tar.gz
+    - uses: actions/upload-artifact@v2
+      with:
+        name: sources
+        path: downloaded/crossover-sources-20.0.4.tar.gz
+  build-llvm:
+    runs-on: macOS-latest
+    needs:
+    - download-sources
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/download-artifact@v2
+      with:
+        name: sources
+    - run: ls .
