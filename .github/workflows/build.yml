@@ -38,6 +38,8 @@ jobs:
         ls
         cd sources/clang/llvm
         mkdir build
+        sudo mkdir -p /opt/cwbgh/llvm
+        sudo chown -R $(whoami) /opt/cwbgh
         cd build
         cmake -DCMAKE_INSTALL_PREFIX=/opt/cwbgh/llvm -DCMAKE_BUILD_TYPE=MinSizeRel ..
         make -j4
