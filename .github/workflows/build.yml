@@ -59,3 +59,48 @@ jobs:
       with:
         name: llvm
         path: llvm.tar.gz
+  build-clang:
+    runs-on: macOS-latest
+    needs:
+    - build-llvm
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/cache@v2
+      id: builded_clang
+      with:
+        path: clang.tar.gz
+        key: v1-clang-20.0.4
+    - uses: actions/download-artifact@v2
+      if: steps.builded_clang.outputs.cache-hit != 'true'
+      with:
+        name: sources
+    - uses: actions/download-artifact@v2
+      if: steps.builded_clang.outputs.cache-hit != 'true'
+      with:
+        name: llvm
+    - run: tar xf crossover-sources-20.0.4.tar.gz
+    - name: Extract LLVM
+      if: steps.builded_clang.outputs.cache-hit != 'true'
+      run: |
+        sudo mkdir -p /opt/cwbgh/llvm
+        sudo chown -R $(whoami) /opt/cwbgh
+        LLVM_TAR_GZ = $(pwd)/llvm.tar.gz
+        cd /
+        tar xf $LLVM_TAR_GZ
+    - name: Build
+      if: steps.builded_clang.outputs.cache-hit != 'true'
+      run: |
+        cd sources/clang/clang
+        mkdir build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=/opt/cwbgh/llvm -DCMAKE_BUILD_TYPE=MinSizeRel ..
+        make -j4
+        make install
+    - name: Archive
+      if: steps.builded_llvm.outputs.cache-hit != 'true'
+      run: |
+        tar czf clang.tar.gz /opt/cwbgh/llvm
+    - uses: actions/upload-artifact@v2
+      with:
+        name: clang
+        path: clang.tar.gz
