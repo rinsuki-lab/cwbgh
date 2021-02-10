@@ -14,7 +14,7 @@ jobs:
         path: downloaded
         key: v1-20.0.4
     - name: Download
-      if: steps.download_sources.outputs.cache-hit != "true"
+      if: steps.download_sources.outputs.cache-hit != 'true'
       run: |
         mkdir -p downloaded
         cd downloaded
