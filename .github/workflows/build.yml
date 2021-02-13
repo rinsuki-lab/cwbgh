@@ -155,6 +155,7 @@ jobs:
         cd build64
         ../configure --enable-win64 --disable-winedbg --disable-tests --disable-winevulkan --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
         make -j4
+        make install
         # Build Wine32
         cd ../
         mkdir build32
