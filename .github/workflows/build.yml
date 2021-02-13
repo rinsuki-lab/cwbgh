@@ -118,7 +118,7 @@ jobs:
       id: builded_wine
       with:
         path: wine.tar.gz
-        key: v1-wine-withx-20.0.4
+        key: v1-wine-20.0.4
     - uses: actions/download-artifact@v2
       if: steps.builded_wine.outputs.cache-hit != 'true'
       with:
@@ -136,8 +136,8 @@ jobs:
       run: |
         sudo mkdir -p /opt/cwbgh/llvm
         sudo chown -R $(whoami) /opt/cwbgh
-        sudo mkdir -p /opt/crossover-wine-x
-        sudo chown -R $(whoami) /opt/crossover-wine-x
+        sudo mkdir -p /opt/crossover-wine
+        sudo chown -R $(whoami) /opt/crossover-wine
         LLVM_TAR_GZ=$(pwd)/clang.tar.gz
         cd /
         tar xf $LLVM_TAR_GZ
@@ -150,14 +150,14 @@ jobs:
         export CXX="clang++"
         export MACOSX_DEPLOYMENT_TARGET=10.14
         cd sources/wine
-        ./configure --enable-win32on64 --disable-winedbg --disable-tests --disable-winevulkan --with-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine-x
+        ./configure --enable-win32on64 --disable-winedbg --disable-tests --disable-winevulkan --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
         make -j4
         make install
     - name: Archive
       if: steps.builded_wine.outputs.cache-hit != 'true'
       run: |
-        tar czf wine-x.tar.gz /opt/crossover-wine-x
+        tar czf wine.tar.gz /opt/crossover-wine
     - uses: actions/upload-artifact@v2
       with:
-        name: wine-x
-        path: wine-x.tar.gz
+        name: wine
+        path: wine.tar.gz
