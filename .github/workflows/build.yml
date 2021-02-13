@@ -118,7 +118,7 @@ jobs:
       id: builded_wine
       with:
         path: wine.tar.gz
-        key: v1-wine-20.0.4
+        key: v1-wine-with64-20.0.4
     - uses: actions/download-artifact@v2
       if: steps.builded_wine.outputs.cache-hit != 'true'
       with:
@@ -150,7 +150,16 @@ jobs:
         export CXX="clang++"
         export MACOSX_DEPLOYMENT_TARGET=10.14
         cd sources/wine
-        ./configure --enable-win32on64 --disable-winedbg --disable-tests --disable-winevulkan --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
+        # Build Wine64
+        mkdir build64
+        cd build64
+        ../configure --enable-win64 --disable-winedbg --disable-tests --disable-winevulkan --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
+        make -j4
+        # Build Wine32
+        cd ../
+        mkdir build32
+        cd build32
+        ../configure --enable-win32on64 --with-wine64=../build64 --disable-winedbg --disable-tests --disable-winevulkan --without-x --without-vulkan --disable-mscms --prefix=/opt/crossover-wine
         make -j4
         make install
     - name: Archive
