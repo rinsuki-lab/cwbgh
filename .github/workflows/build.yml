@@ -118,7 +118,7 @@ jobs:
       id: builded_wine
       with:
         path: wine.tar.gz
-        key: v1-wine-with64-20.0.4
+        key: v1-wine-with64-vulkan-20.0.4
     - uses: actions/download-artifact@v2
       if: steps.builded_wine.outputs.cache-hit != 'true'
       with:
