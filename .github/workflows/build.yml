@@ -1,3 +1,4 @@
+name: Build
 on:
   push:
     branches:
@@ -171,3 +172,38 @@ jobs:
       with:
         name: wine
         path: wine.tar.gz
+  upload-to-release:
+    runs-on: macOS-latest
+    needs:
+    - build-wine
+    if: success() && !contains(github.event.head_commit.message, '[skip release]') && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    steps:
+    - uses: actions/checkout@master
+    - name: Create Tag String
+      id: tag
+      run: |
+        echo "::set-output name=tag::$(date +%Y%m%d).$(git rev-parse --short HEAD)"
+        echo "::set-output name=sha::$(git rev-parse HEAD)"
+    - uses: actions/download-artifact@v2
+      with:
+        name: wine
+    - run: mv wine.tar.gz wine.${{ steps.tag.outputs.tag }}.tar.gz
+    - uses: actions/create-release@v1 
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.tag.outputs.tag }}
+        release_name: Automatically Build ${{ steps.tag.outputs.tag }}
+        body: |
+          based on ${{ steps.tag.outputs.sha }}
+        draft: true
+        prerelease: true
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./wine.${{ steps.tag.outputs.tag }}.tar.gz
+        asset_name: wine.${{ steps.tag.outputs.tag }}.tar.gz
+        asset_content_type: application/x-gzip
