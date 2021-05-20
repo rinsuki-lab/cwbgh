@@ -187,8 +187,13 @@ jobs:
         echo "::set-output name=sha::$(git rev-parse HEAD)"
     - uses: actions/download-artifact@v2
       with:
+        name: clang
+    - uses: actions/download-artifact@v2
+      with:
         name: wine
-    - run: mv wine.tar.gz wine.${{ steps.tag.outputs.tag }}.tar.gz
+    - run: |
+        mv wine.tar.gz wine.${{ steps.tag.outputs.tag }}.tar.gz
+        mv clang.tar.gz clang.${{ steps.tag.outputs.tag }}.tar.gz
     - uses: actions/create-release@v1 
       id: create_release
       env:
@@ -207,4 +212,12 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./wine.${{ steps.tag.outputs.tag }}.tar.gz
         asset_name: wine.${{ steps.tag.outputs.tag }}.tar.gz
+        asset_content_type: application/x-gzip
+    - uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./clang.${{ steps.tag.outputs.tag }}.tar.gz
+        asset_name: clang.${{ steps.tag.outputs.tag }}.tar.gz
         asset_content_type: application/x-gzip
