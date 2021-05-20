@@ -129,7 +129,9 @@ jobs:
       if: steps.builded_wine.outputs.cache-hit != 'true'
       with:
         name: clang
-    - run: tar xf crossover-sources-20.0.4.tar.gz
+    - run: |
+        tar xf crossover-sources-20.0.4.tar.gz
+        rm -rf sources/{android,busybox,clang,dxvk,freetype,gnutls,htmltetview,makedep,pyxdg,samba3}
       if: steps.builded_wine.outputs.cache-hit != 'true'
     - run: cp ./distversion.h ./sources/wine/include/
       if: steps.builded_wine.outputs.cache-hit != 'true'
